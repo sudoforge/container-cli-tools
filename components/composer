@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+COMPOSER_HOME=$HOME/.composer
+
+tty=
+tty -s && tty=--tty
+
+docker run \
+    $tty \
+    --rm \
+    --interactive \
+    --user $(id -u):$(id -g) \
+    --volume $COMPOSER_HOME:/composer \
+    --volume /etc/passwd:/etc/passwd:ro \
+    --volume /etc/group:/etc/group:ro \
+    --volume $(pwd):/app \
+    composer "$@"
+
+
