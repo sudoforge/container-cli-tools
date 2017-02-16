@@ -1,12 +1,11 @@
 # docker-cli-tools
 
-A collection of docker images specifically built to be used as CLI tools.
+A collection of shell wrapper functions to enable you to easily execute CLI
+tools in containers.
 
 ## Installation
 
-Each project is added as a submodule, and you should reference the README within.
-
-This repository exists simply to house all of my docker-cli projects together.
+Simply place the desired script(s) somewhere in your `PATH` and voila!
 
 ## License (MIT)
 
