@@ -1,16 +1,22 @@
 #!/usr/bin/env sh
 
-COMPOSER_HOME=$HOME/.composer
-
-tty=
+tty=""
 tty -s && tty=--tty
+
+COMPOSER_MOUNT=""
+COMPOSER_HOME="${HOME}/.composer"
+if [ -e $COMPOSER_HOME ]; then
+    COMPOSER_MOUNT="--volume $COMPOSER_HOME:/composer"
+else
+    echo "Consider creating $COMPOSER_HOME to use the cache."
+fi
 
 docker run \
     $tty \
     --rm \
     --interactive \
     --user $(id -u):$(id -g) \
-    --volume $COMPOSER_HOME:/composer \
+    $COMPOSER_MOUNT \
     --volume /etc/passwd:/etc/passwd:ro \
     --volume /etc/group:/etc/group:ro \
     --volume $(pwd):/app \
