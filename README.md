@@ -1,4 +1,4 @@
-# docker-cli-tools
+# container-cli-tools
 
 A collection of shell wrapper functions to enable you to easily execute CLI
 tools in containers.
