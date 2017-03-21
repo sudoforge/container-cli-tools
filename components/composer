@@ -3,13 +3,24 @@
 tty=""
 tty -s && tty=--tty
 
+
 COMPOSER_MOUNT=""
 COMPOSER_HOME="${HOME}/.composer"
 if [ -e $COMPOSER_HOME ]; then
-    COMPOSER_MOUNT="--volume $COMPOSER_HOME:/composer"
+    COMPOSER_MOUNT="--volume $COMPOSER_HOME:/composer:z"
 else
     echo "Consider creating $COMPOSER_HOME to use the cache."
 fi
+
+
+REPOSITORY_ROOT=$(\
+  command git rev-parse --show-toplevel 2> /dev/null || \
+  command hg root 2> /dev/null)
+VENDOR_MOUNT=""
+if [ -d "${REPOSITORY_ROOT}" ]; then
+  VENDOR_MOUNT="--volume ${REPOSITORY_ROOT}/vendor:/vendor:z"
+fi
+
 
 docker run \
     $tty \
@@ -17,9 +28,8 @@ docker run \
     --interactive \
     --user $(id -u):$(id -g) \
     $COMPOSER_MOUNT \
+    $VENDOR_MOUNT \
     --volume /etc/passwd:/etc/passwd:ro \
     --volume /etc/group:/etc/group:ro \
     --volume $(pwd):/app \
     composer "$@"
-
-
