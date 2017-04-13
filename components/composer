@@ -57,9 +57,10 @@ fi
 REPOSITORY_ROOT=$(\
   command git rev-parse --show-toplevel 2> /dev/null || \
   command hg root 2> /dev/null)
-VENDOR_MOUNT=""
-if [ -d "${REPOSITORY_ROOT}" ]; then
-  VENDOR_MOUNT="--volume ${REPOSITORY_ROOT}/vendor:/vendor:z"
+ROOT_VENDOR_DIR="${REPOSITORY_ROOT}/vendor"
+CURRENT_DIR="${PWD}"
+if [ -d "${ROOT_VENDOR_DIR}" ] && [ "${CURRENT_DIR}" != "${REPOSITORY_ROOT}" ]; then
+    pushd "${REPOSITORY_ROOT}" &> /dev/null
 fi
 
 
@@ -69,8 +70,12 @@ docker run \
     --interactive \
     --user $(id -u):$(id -g) \
     $COMPOSER_MOUNT \
-    $VENDOR_MOUNT \
     --volume /etc/passwd:/etc/passwd:ro \
     --volume /etc/group:/etc/group:ro \
     --volume $(pwd):/app \
     composer "$@"
+
+
+if [ -d "${ROOT_VENDOR_DIR}" ] && [ "${CURRENT_DIR}" != "${REPOSITORY_ROOT}" ]; then
+    popd &> /dev/null
+fi
