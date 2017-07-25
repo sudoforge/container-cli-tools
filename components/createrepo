@@ -51,4 +51,5 @@ docker run \
     --interactive \
     --user $(id -u):$(id -g) \
     --volume $(pwd):/build \
+    --workdir /build \
     "$IMAGE_REPOSITORY" "$*"
