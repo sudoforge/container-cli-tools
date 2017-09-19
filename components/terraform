@@ -41,7 +41,19 @@ if [ "${1}" == "upgrade" ]; then
     exit
 fi
 
+AWS_DIR_MOUNT=""
+AWS_DIR="${HOME}/.aws"
+if [ -d $AWS_DIR ]; then
+    AWS_DIR_MOUNT="--volume ${AWS_DIR}:/${AWS_DIR}:ro"
+fi
+
 docker run \
     --rm \
     --interactive \
+    --user $(id -u):$(id -g) \
+    $AWS_DIR_MOUNT \
+    --volume /etc/passwd:/etc/passwd:ro \
+    --volume /etc/group:/etc/group:ro \
+    --volume $(pwd):/src \
+    --workdir /src \
     hashicorp/terraform "$@"
